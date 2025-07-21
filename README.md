@@ -33,6 +33,15 @@ My-todolist/
 	•	Events – Clicks, form handling
 	•	Hooks – useState, useEffect, etc.
 
+| Concept       | What It Is                        | Example Code                          | Purpose                              |
+| ------------- | --------------------------------- | ------------------------------------- | ------------------------------------ |
+| **JSX**       | HTML inside JavaScript            | `<h1>Hello</h1>`                      | Build UI with HTML-like syntax       |
+| **Component** | Reusable UI block                 | `function Header() { return <h1 /> }` | Create modular, reusable parts       |
+| **Props**     | Data passed to components         | `<Greeting name="Alex" />`            | Share data from parent to child      |
+| **State**     | Internal data of a component      | `useState(0)`                         | Store and update local values        |
+| **Events**    | User interaction (clicks, input)  | `onClick={() => ...}`                 | Handle actions like clicks or typing |
+| **Hooks**     | Special functions (e.g. useState) | `useEffect(() => {...}, [])`          | Add logic to functional components   |
+
 
 ## Navbar.jsx
 
