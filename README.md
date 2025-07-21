@@ -78,7 +78,7 @@ export default function Navbar() {
 
 export default function CategoryFilter({ categories, selected, onSelect }) {
   return (
-    // A flex container that wraps buttons and adds spacing
+  
     <div className="mb-6 flex gap-2 flex-wrap">
       
       {/* Loop through each category and create a button */}
@@ -86,12 +86,12 @@ export default function CategoryFilter({ categories, selected, onSelect }) {
         <button
           key={cat} // React needs a unique key for each item in a list
 
-          // Use Tailwind CSS classes for styling
+         
           className={`
-            px-4 py-1.5         // Padding (left-right and top-bottom)
-            rounded-full        // Makes the button pill-shaped
-            text-sm font-medium // Small-medium sized text
-            transition duration-200 // Smooth transition for hover effect
+            px-4 py-1.5         
+            rounded-full        
+            text-sm font-medium 
+            transition duration-200 
 
             // If this button matches the selected category,
             // make it dark with white text. Otherwise, light gray.
@@ -233,7 +233,6 @@ export default function TaskItem({ task, onToggle }) {
       {/* Task text and category label */}
       <span>
         {task.text}{" "}
-        {/* Show category in lighter, smaller text */}
         <span className="text-xs text-gray-500 font-light">
           ({task.category})
         </span>
