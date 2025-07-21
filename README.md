@@ -33,7 +33,225 @@ My-todolist/
 	•	Events – Clicks, form handling
 	•	Hooks – useState, useEffect, etc.
 
+
+## Navbar.jsx
+
+<img width="1191" height="59" alt="Screenshot 2025-07-21 at 1 55 06 PM" src="https://github.com/user-attachments/assets/c5ee9002-bc28-48e2-b9ef-7162b10e7e0e" />
+
+```jsx
+export default function Navbar() {
+  return (
+<nav className="bg-gray-800 px-6 py-4 shadow-lg flex items-center justify-between">
+  <div className="text-white text-2xl font-bold tracking-tight">
+    My To-Do List
+  </div>
+  <div className="hidden sm:flex space-x-6 text-white text-sm font-medium">
+    <a href="#" className="hover:text-gray-400 transition duration-200">Home</a>
+    <a href="#" className="hover:text-gray-400 transition duration-200">About</a>
+  </div>
+</nav>
+  );
+}
+```
+
+
+
+## CategoryFilter.jsx
+
+<img width="1191" height="59" alt="Screenshot 2025-07-21 at 1 53 39 PM" src="https://github.com/user-attachments/assets/8f383d4a-35e8-402f-8360-8b5f4c727528" />
+
+```jsx
+// This component displays buttons to filter tasks by category (e.g. All, Work, Personal)
+// Props:
+// - categories: an array of category names
+// - selected: the currently selected category
+// - onSelect: function to update the selected category when a button is clicked
+
+export default function CategoryFilter({ categories, selected, onSelect }) {
+  return (
+    // A flex container that wraps buttons and adds spacing
+    <div className="mb-6 flex gap-2 flex-wrap">
+      
+      {/* Loop through each category and create a button */}
+      {categories.map(cat => (
+        <button
+          key={cat} // React needs a unique key for each item in a list
+
+          // Use Tailwind CSS classes for styling
+          className={`
+            px-4 py-1.5         // Padding (left-right and top-bottom)
+            rounded-full        // Makes the button pill-shaped
+            text-sm font-medium // Small-medium sized text
+            transition duration-200 // Smooth transition for hover effect
+
+            // If this button matches the selected category,
+            // make it dark with white text. Otherwise, light gray.
+            ${selected === cat
+              ? "bg-gray-800 text-white"                // Selected button styles
+              : "bg-gray-100 text-gray-800 hover:bg-gray-200" // Unselected + hover effect
+            }
+          `}
+          
+          // When the button is clicked, call onSelect with this category
+          onClick={() => onSelect(cat)}
+        >
+          {/* Display the category name on the button */}
+          {cat}
+        </button>
+      ))}
+
+    </div>
+  );
+}
+
+
+```
+
+
+
+## TodoList.jsx
+
+
+<img width="1191" height="68" alt="Screenshot 2025-07-21 at 2 00 03 PM" src="https://github.com/user-attachments/assets/e9c0cbfe-455b-4e24-96bf-0cc431f5c632" />
+
+```jsx
+// Import React's useState hook to manage local input form state
+import { useState } from "react";
+
+// Import the TaskItem component to display each individual task
+import TaskItem from "./TaskItem";
+
+// Main component that handles the task input form and renders the list of tasks
+export default function TodoList({ tasks, onToggle, onAdd }) {
+
+  // Local state to track the text input for the new task
+  const [newTask, setNewTask] = useState("");
+
+  // Local state to track the selected category for the new task
+  const [newCategory, setNewCategory] = useState("Personal");
+
+  // Function that runs when the ➕ button is clicked
+  const handleAdd = () => {
+    // Make sure the input is not just empty spaces
+    if (newTask.trim() !== "") {
+      // Call the onAdd function from the parent (App) with the new task data
+      onAdd(newTask, newCategory);
+
+      // Clear the input field after adding the task
+      setNewTask("");
+    }
+  };
+
+  return (
+    <div>
+      {/* === Add Task Form === */}
+      <div className="flex gap-3 mb-6">
+        
+        {/* Text input for the new task description */}
+        <input
+          value={newTask} // Controlled input bound to newTask state
+          onChange={(e) => setNewTask(e.target.value)} // Update newTask as the user types
+          placeholder="Add new task"
+          className="border border-gray-400 rounded-md px-3 py-2 flex-grow text-gray-900 focus:outline-none focus:ring-2 focus:ring-black"
+        />
+
+        {/* Dropdown to choose a category for the new task */}
+        <select
+          value={newCategory} // Controlled input bound to newCategory state
+          onChange={(e) => setNewCategory(e.target.value)} // Update newCategory on selection
+          className="border border-gray-400 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-black"
+        >
+          {/* Options for categories */}
+          <option value="Personal">Personal</option>
+          <option value="Work">Work</option>
+          <option value="Learning">Learning</option>
+          <option value="Others">Others</option>
+        </select>
+
+        {/* Button to add the new task */}
+        <button
+          onClick={handleAdd} // Calls handleAdd when clicked
+          className="bg-gray-800 text-white rounded-md px-4 py-2 hover:bg-gray-800 transition"
+          aria-label="Add task"
+        >
+          ➕
+        </button>
+      </div>
+
+      {/* === Task List Display === */}
+      <div className="space-y-3">
+        {/* Loop through tasks and render each one with TaskItem */}
+        {tasks.map((task) => (
+          <TaskItem 
+            key={task.id}       // Unique key for each task (required by React)
+            task={task}         // Pass the task object to the TaskItem
+            onToggle={onToggle} // Pass the toggle function so TaskItem can mark done/undone
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+```
+
+
+## TaskItem.jsx
+
+<img width="1191" height="238" alt="Screenshot 2025-07-21 at 1 59 37 PM" src="https://github.com/user-attachments/assets/f6833049-5aa0-4655-98b5-6848dbd387ba" />
+
+```jsx
+// This component renders a single task item
+// Props:
+// - task: an object with properties like text, category, done, id
+// - onToggle: function to toggle this task's "done" state
+
+export default function TaskItem({ task, onToggle }) {
+  return (
+    // Container for the task with dynamic styles based on task.done
+    <div
+      className={`flex justify-between items-center border rounded p-3 transition-colors duration-200 
+        ${
+          task.done
+            // If task is done: darker background, grayed out text, strikethrough, darker border
+            ? "bg-gray-800 text-gray-400 line-through border-gray-700"
+            // If not done: white background, normal text, hover effect
+            : "bg-white text-gray-900 border-gray-300 hover:bg-gray-50"
+        }`}
+    >
+
+      {/* Task text and category label */}
+      <span>
+        {task.text}{" "}
+        {/* Show category in lighter, smaller text */}
+        <span className="text-xs text-gray-500 font-light">
+          ({task.category})
+        </span>
+      </span>
+
+      {/* Toggle button for marking as done/undo */}
+      <button
+        onClick={() => onToggle(task.id)} // Calls the toggle function with task ID
+
+        // Change button color based on whether the task is done
+        className={`text-sm font-semibold transition-colors duration-200
+          ${
+            task.done
+              ? "text-yellow-400 hover:text-yellow-300" // Yellow for undo
+              : "text-pink-600 hover:text-pink-500"     // Pink for done
+          }`}
+      >
+        {/* Button label: shows 'Undo' if done, otherwise 'Done' */}
+        {task.done ? "Undo" : "Done"}
+      </button>
+    </div>
+  );
+}
+```
 ### App.jsx 
+<img width="1191" height="462" alt="Screenshot 2025-07-21 at 2 00 56 PM" src="https://github.com/user-attachments/assets/7ee91748-32b4-457b-b00e-679954ad87e9" />
+
 
 ##### Purpose:
 ##### Main component where app state is managed and components are composed.
@@ -131,20 +349,32 @@ This filtered list is what will be shown in the TodoList.
 ```jsx
   return (
     <>
-      <Navbar />
+      <Navbar />  //shows the navigation bar.
       <div className="p-4 max-w-2xl mx-auto">
         <CategoryFilter 
           categories={categories}
           selected={selectedCategory}
           onSelect={setSelectedCategory}
         />
+//renders category buttons and allows the user to change the filter.
+//categories is the list of filter options.
+//onSelect is a callback function to update the selected category.
         <TodoList 
           tasks={filteredTasks}
           onToggle={toggleDone}
           onAdd={addTask}
         />
-      </div>
+// shows the list of tasks (filtered).
+//tasks is the filtered array.
+// onToggle is passed to toggle task completion when clicked.
+// onAdd is used to add new tasks.      </div>
     </>
   );
 }
 ```
+###
+### Step 9: Exporting the Component
+```jsx
+export default App;
+```
+
